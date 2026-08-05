@@ -9,7 +9,8 @@ Interactive tracker for two French cycling col challenges:
 
 ## How it works
 
-- Browse both challenges on interactive maps (OpenStreetMap / OpenTopoMap) with every col pinned
+- Explore all 113 Alps cols on an interactive 3D relief map, with searchable and filterable challenge markers
+- Browse the Ligne Bleue challenge on its existing OpenTopoMap view
 - Check off cols as you climb them — the date is stamped automatically (and editable)
 - Paste a Strava activity link on any col to keep a record of the ride
 - Progress is saved in your browser (localStorage) — nothing leaves your device
@@ -21,4 +22,4 @@ Want your own tracker? Just open the link — each visitor gets their own privat
 
 All 154 col coordinates and elevations were verified against OpenStreetMap, the IGN Géoplateforme gazetteer, and IGN RGE ALTI ground elevations (every pin's terrain elevation matches its stated col elevation within 100 m). Ligne Bleue elevations follow the official Club des Cent Cols codes.
 
-Built with [Leaflet](https://leafletjs.com/). Single self-contained HTML file — no build, no backend.
+Built with [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/), [OpenFreeMap](https://openfreemap.org/), [Mapterhorn](https://mapterhorn.com/), and [Leaflet](https://leafletjs.com/). The Alps view falls back to OpenTopoMap when WebGL relief is unavailable. Single self-contained HTML file — no build, no backend.
