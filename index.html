@@ -632,6 +632,22 @@
             padding: 24px;
             overflow-x: auto;
         }
+
+        .climb-data-note {
+            margin: 0;
+            padding: 14px 24px;
+            border-top: 1px solid #e8e4df;
+            border-bottom: 1px solid #e8e4df;
+            background: #ffffff;
+            color: #666;
+            font-size: 0.82rem;
+            line-height: 1.55;
+        }
+
+        .climb-data-note a {
+            color: #467765;
+            font-weight: 600;
+        }
         
         table {
             width: 100%;
@@ -640,6 +656,10 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .savoie-table {
+            min-width: 920px;
         }
         
         th {
@@ -743,6 +763,22 @@
         .elevation {
             color: #666;
             font-size: 0.9rem;
+        }
+
+        .distance,
+        .tour-cell {
+            color: #666;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .tour-yes {
+            color: #2f715b;
+            font-weight: 700;
+        }
+
+        .tour-no {
+            color: #aaa;
         }
         
         .leaflet-popup-content-wrapper {
@@ -1449,6 +1485,7 @@
                 <button class="filter-btn active" data-filter="all" data-challenge="savoie">All</button>
                 <button class="filter-btn" data-filter="completed" data-challenge="savoie">Completed</button>
                 <button class="filter-btn" data-filter="remaining" data-challenge="savoie">Remaining</button>
+                <button class="filter-btn" data-filter="tour" data-challenge="savoie">Tour de France</button>
             </div>
         </div>
         
@@ -1458,14 +1495,22 @@
             <button class="share-btn savoie" onclick="importProgress()">Import Progress</button>
             <button class="share-btn savoie" onclick="resetProgress('savoie')">Reset Progress</button>
         </div>
+
+        <p class="climb-data-note">
+            <strong>Distance</strong> is the shortest-to-longest documented cycling approach; a dash means no standard road profile is available.
+            <strong>Tour de France</strong> marks cols previously used by the men's race.
+            Profile and race-history reference: <a href="https://www.cyclingcols.com/" target="_blank" rel="noopener">CyclingCols</a>.
+        </p>
         
         <div class="table-container">
-            <table>
+            <table class="savoie-table">
                 <thead>
                     <tr>
                         <th class="savoie checkbox-cell">Done</th>
                         <th class="savoie">Col</th>
                         <th class="savoie">Elevation</th>
+                        <th class="savoie">Distance</th>
+                        <th class="savoie">Tour de France</th>
                         <th class="savoie">Climbed On</th>
                         <th class="savoie">Strava</th>
                     </tr>
@@ -1751,6 +1796,82 @@
             { id: 112, name: "Collet de Plan Nicolas", region: "Maurienne, Tarentaise & South", lat: 45.0759, lng: 6.4117, elevation: 2406 },
         ];
 
+        // Shortest-to-longest documented cycling approaches. Cols without a
+        // standard road-climb profile intentionally keep a null distance.
+        const SAVOIE_CLIMB_FACTS = {
+            1: { distanceKm: [16.2, 30.6], tourDeFrance: true },
+            2: { distanceKm: [14.8] },
+            3: { distanceKm: [5.5, 7.6], tourDeFrance: true },
+            4: { distanceKm: [4.5, 6.9] },
+            5: { distanceKm: [8.8, 11.2] },
+            6: { distanceKm: [2.9, 6.1], tourDeFrance: true },
+            7: { distanceKm: [5.7, 11.7] },
+            8: { distanceKm: [7.8, 16.1], tourDeFrance: true },
+            10: { distanceKm: [8.1, 10.4], tourDeFrance: true },
+            11: { distanceKm: [13.4, 23.5], tourDeFrance: true },
+            12: { distanceKm: [4.8, 8.2], tourDeFrance: true },
+            14: { distanceKm: [5.2, 6.9] },
+            16: { distanceKm: [14, 15.9], tourDeFrance: true },
+            17: { distanceKm: [9, 15.5] },
+            19: { distanceKm: [10.8, 12.9], tourDeFrance: true },
+            20: { distanceKm: [12, 14.4], tourDeFrance: true },
+            22: { distanceKm: [3.5, 27.6] },
+            23: { distanceKm: [7.5, 7.8], tourDeFrance: true },
+            24: { distanceKm: [10.7, 12] },
+            32: { distanceKm: [5.5, 8.3], tourDeFrance: true },
+            33: { distanceKm: [13.1, 31.2], tourDeFrance: true },
+            42: { distanceKm: [13.3, 18.4], tourDeFrance: true },
+            43: { distanceKm: [11.7, 18.8], tourDeFrance: true },
+            45: { distanceKm: [6.4, 13.1] },
+            46: { distanceKm: [6.9, 10.2], tourDeFrance: true },
+            47: { distanceKm: [7, 14.4], tourDeFrance: true },
+            48: { distanceKm: [16.4, 21.5] },
+            49: { distanceKm: [6.8, 12.5], tourDeFrance: true },
+            50: { distanceKm: [4.6, 7] },
+            52: { distanceKm: [8.3, 12.9], tourDeFrance: true },
+            53: { distanceKm: [7.7, 11.8], tourDeFrance: true },
+            54: { distanceKm: [10.7, 12.6], tourDeFrance: true },
+            56: { distanceKm: [13.9, 15.7], tourDeFrance: true },
+            58: { distanceKm: [22.4, 25.1] },
+            59: { distanceKm: [12.2, 17.3], tourDeFrance: true },
+            61: { distanceKm: [19.3, 20.2], tourDeFrance: true },
+            62: { distanceKm: [17.3, 25.5], tourDeFrance: true },
+            63: { distanceKm: [7.4, 11.9], tourDeFrance: true },
+            64: { distanceKm: [12.6, 13.7], tourDeFrance: true },
+            65: { distanceKm: [15.8, 16], tourDeFrance: true },
+            66: { distanceKm: [9.9, 18.4], tourDeFrance: true },
+            67: { distanceKm: [19.1, 22.7], tourDeFrance: true },
+            71: { distanceKm: [9.3, 15.4], tourDeFrance: true },
+            72: { distanceKm: [10.1, 10.2], tourDeFrance: true },
+            76: { distanceKm: [9, 15.2] },
+            77: { distanceKm: [9.3, 14] },
+            79: { distanceKm: [5.9, 7.4] },
+            81: { distanceKm: [4.3, 6.9] },
+            82: { distanceKm: [7.8, 12.1], tourDeFrance: true },
+            83: { distanceKm: [4, 8.4] },
+            84: { distanceKm: [5, 7] },
+            85: { distanceKm: [7, 10.6] },
+            95: { distanceKm: [19.3, 25.3], tourDeFrance: true },
+            96: { distanceKm: [12.7, 18.4], tourDeFrance: true },
+            98: { distanceKm: [13.8, 15.8], tourDeFrance: true },
+            100: { distanceKm: [19.8, 29.7], tourDeFrance: true },
+            101: { distanceKm: [22.7, 32.1], tourDeFrance: true },
+            102: { distanceKm: [17.1, 20.8], tourDeFrance: true },
+            103: { distanceKm: [12.1], tourDeFrance: true },
+            105: { distanceKm: [35.1, 42.7], tourDeFrance: true },
+            106: { distanceKm: [10, 11.2] },
+            108: { distanceKm: [31.9, 46.8], tourDeFrance: true },
+            109: { distanceKm: [22.7, 31.5], tourDeFrance: true },
+            110: { distanceKm: [9.9, 30.3], tourDeFrance: true },
+            113: { distanceKm: [9.1, 10.5], tourDeFrance: true },
+        };
+
+        savoieData.forEach(col => Object.assign(
+            col,
+            { distanceKm: null, tourDeFrance: false },
+            SAVOIE_CLIMB_FACTS[col.id] || {}
+        ));
+
         // ========== LIGNE BLEUE DATA ==========
         // 41 cols along the 1871-1918 Franco-German border
         const ligneBleueData = [
@@ -1898,12 +2019,25 @@
         let savoieMapRetries = 0;
         const SAVOIE_BOUNDS = [[5.65, 45.02], [7.08, 46.36]];
 
+        function formatKilometres(value) {
+            return Number.isInteger(value) ? String(value) : value.toFixed(1);
+        }
+
+        function formatClimbDistance(col) {
+            if (!Array.isArray(col.distanceKm) || col.distanceKm.length === 0) return '—';
+            const [minimum, maximum = minimum] = col.distanceKm;
+            if (minimum === maximum) return `${formatKilometres(minimum)} km`;
+            return `${formatKilometres(minimum)}–${formatKilometres(maximum)} km`;
+        }
+
         function filteredSavoieData() {
             let filtered = savoieData;
             if (savoieFilter === 'completed') {
                 filtered = savoieData.filter(col => savoieProgress[col.id]?.completed);
             } else if (savoieFilter === 'remaining') {
                 filtered = savoieData.filter(col => !savoieProgress[col.id]?.completed);
+            } else if (savoieFilter === 'tour') {
+                filtered = savoieData.filter(col => col.tourDeFrance);
             }
 
             if (savoieSearch) {
@@ -1966,6 +2100,7 @@
                 return regions;
             }, {});
             const completed = savoieData.filter(col => savoieProgress[col.id]?.completed).length;
+            const tourCols = savoieData.filter(col => col.tourDeFrance).length;
             return `
                 <p class="relief-inspector-kicker">The whole challenge</p>
                 <h3>113 cols across the French Alps</h3>
@@ -1973,6 +2108,7 @@
                 <dl class="relief-facts">
                     <div><dt>Completed</dt><dd>${completed} of ${savoieData.length}</dd></div>
                     <div><dt>Highest</dt><dd>Col de l'Iseran · 2,764 m</dd></div>
+                    <div><dt>Tour de France</dt><dd>${tourCols} cols</dd></div>
                     <div><dt>Regions</dt><dd>${Object.keys(counts).length}</dd></div>
                 </dl>
                 <div class="relief-region-list">
@@ -1997,6 +2133,8 @@
                 <p class="relief-inspector-copy">${escAttr(col.region)}</p>
                 <dl class="relief-facts">
                     <div><dt>Elevation</dt><dd>${col.elevation.toLocaleString()} m</dd></div>
+                    <div><dt>Distance</dt><dd>${formatClimbDistance(col)}</dd></div>
+                    <div><dt>Tour de France</dt><dd>${col.tourDeFrance ? 'Yes' : 'No'}</dd></div>
                     <div><dt>Status</dt><dd>${completed ? 'Completed' : 'Still to ride'}</dd></div>
                     ${completed && p.date ? `<div><dt>Climbed</dt><dd>${formatDate(p.date)}</dd></div>` : ''}
                     <div><dt>Challenge no.</dt><dd>${col.id} of ${savoieData.length}</dd></div>
@@ -2330,6 +2468,8 @@
                     <h3>${col.name}</h3>
                     <p><strong>Region:</strong> ${col.region}</p>
                     <p><strong>Elevation:</strong> ${col.elevation}m</p>
+                    <p><strong>Distance:</strong> ${formatClimbDistance(col)}</p>
+                    <p><strong>Tour de France:</strong> ${col.tourDeFrance ? 'Yes' : 'No'}</p>
                     <p><strong>Status:</strong> ${status}</p>
                     ${p.strava ? `<p><a href="${escAttr(p.strava)}" target="_blank" class="strava-link">View on Strava →</a></p>` : ''}
                     <button class="popup-btn" onclick="toggleSavoie(${col.id})">
@@ -2375,9 +2515,15 @@
             const filtered = filteredSavoieData();
             
             filtered.forEach(col => {
+                const climbCells = `
+                    <td class="distance">${formatClimbDistance(col)}</td>
+                    <td class="tour-cell">${col.tourDeFrance
+                        ? '<span class="tour-yes">Yes</span>'
+                        : '<span class="tour-no">No</span>'}</td>
+                `;
                 const tr = document.createElement('tr');
                 tr.className = savoieProgress[col.id]?.completed ? 'completed' : '';
-                tr.innerHTML = buildRowCells(col, 'savoie', savoieProgress[col.id] || {});
+                tr.innerHTML = buildRowCells(col, 'savoie', savoieProgress[col.id] || {}, climbCells);
                 tbody.appendChild(tr);
             });
 
@@ -2523,7 +2669,7 @@
         }
 
         // ========== TABLE INTERACTIONS ==========
-        // Shared row template: Done | Col | Elevation | [Access] | Climbed On | Strava
+        // Shared row template: Done | Col | Elevation | [Challenge details] | Climbed On | Strava
         function buildRowCells(col, challenge, p, extraCell = '') {
             const stravaUrl = p.strava || '';
             const colName = challenge === 'savoie'
